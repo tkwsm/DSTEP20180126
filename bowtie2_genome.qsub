@@ -1,0 +1,26 @@
+#!/bin/sh
+#$ -S /bin/sh
+#$ -cwd 
+#$ -l s_vmem=10G,mem_req=10G
+#$ -l short
+#$ -pe def_slot 1
+#$ -o ./log
+#$ -e ./log
+
+source ~/.bashrc
+
+# wget ftp://ftp.ddbj.nig.ac.jp/ddbj_database/dra/fastq/ERA013/ERA013570/ERX007485/ERR019036_1.fastq.bz2
+# wget ftp://ftp.ddbj.nig.ac.jp/ddbj_database/dra/fastq/ERA013/ERA013570/ERX007485/ERR019036_2.fastq.bz2
+# bunzip2 ERR019036*.fastq.bz2
+
+bowtie2 -q -x Danio_rerio.GRCz10.dna.chromosome.9.fa -1 ERR019036_1.fastq -2 ERR019036_2.fastq -S danio_ERR019036.sam
+
+samtools view -bt Danio_rerio.GRCz10.dna.chromosome.9.fa -o danio_ERR019036.bam danio_ERR019036.sam
+samtools sort -o danio_ERR019036.sorted.bam danio_ERR019036.bam 
+samtools index danio_ERR019036.sorted.bam
+samtools faidx Danio_rerio.GRCz10.dna.chromosome.9.fa
+
+samtools mpileup -uf Danio_rerio.GRCz10.dna.chromosome.9.fa danio_ERR019036.sorted.bam | bcftools call -mv > danio_ERR019036.var.raw.vcf
+bcftools filter -s LowQual -e '%QUAL<20 || DP>100' danio_ERR019036.var.raw.vcf  > var.flt.vcf
+
+
