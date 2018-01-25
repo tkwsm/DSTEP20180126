@@ -20,7 +20,6 @@ samtools sort -o danio_ERR019010.sorted.bam danio_ERR019010.bam
 samtools index danio_ERR019010.sorted.bam
 samtools faidx Danio_rerio.GRCz10.dna.chromosome.9.fa
 
-samtools mpileup -uf Danio_rerio.GRCz10.dna.chromosome.9.fa danio_ERR019010.sorted.bam | bcftools call -mv > danio_ERR019010.var.raw.vcf
-bcftools filter -s LowQual -e '%QUAL<20 || DP>100' danio_ERR019010.var.raw.vcf  > danio_ERR019010.var.flt.vcf
+samtools mpileup -vuf Danio_rerio.GRCz10.dna.chromosome.9.fa danio_ERR019010.sorted.bam >danio_ERR019010.vcf
 
 
