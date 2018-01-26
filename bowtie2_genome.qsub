@@ -1,7 +1,7 @@
 #!/bin/sh
 #$ -S /bin/sh
 #$ -cwd 
-#$ -l s_vmem=10G,mem_req=10G
+#$ -l s_vmem=2G,mem_req=2G
 #$ -l short
 #$ -pe def_slot 1
 #$ -o ./log
